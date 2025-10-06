@@ -2,56 +2,136 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Country Restrictions Map</title>
+    <title>Global Development Map</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {
         packages: ['geochart'],
       });
-      google.charts.setOnLoadCallback(drawRegionsMap);
+      google.charts.setOnLoadCallback(drawHDIMap);
 
-      function drawRegionsMap() {
-        const red = '#D32F2F';
-        const grey = '#BDBDBD';
+      // HDI data (sample — expand to full 193 countries)
+      const hdiData = [
+  ['Country', 'HDI Score'],
+  ['IS', 0.972], ['NO', 0.970], ['CH', 0.970], ['DK', 0.962], ['DE', 0.959],
+  ['SE', 0.959], ['AU', 0.958], ['NL', 0.955], ['HK', 0.955], ['BE', 0.951],
+  ['IE', 0.949], ['FI', 0.948], ['SG', 0.946], ['GB', 0.946], ['AE', 0.940],
+  ['CA', 0.939], ['LI', 0.938], ['NZ', 0.938], ['US', 0.938], ['KR', 0.937],
+  ['SI', 0.931], ['AT', 0.930], ['JP', 0.925], ['MT', 0.924], ['LU', 0.922],
+  ['FR', 0.920], ['IL', 0.919], ['ES', 0.918], ['CZ', 0.915], ['IT', 0.915],
+  ['SM', 0.915], ['AD', 0.913], ['CY', 0.913], ['GR', 0.908], ['PL', 0.906],
+  ['EE', 0.905], ['SA', 0.900], ['BH', 0.899], ['LT', 0.895], ['PT', 0.890],
+  ['HR', 0.889], ['LV', 0.889], ['QA', 0.886], ['SK', 0.880], ['CL', 0.878],
+  ['HU', 0.870], ['AR', 0.865], ['ME', 0.862], ['UY', 0.862], ['OM', 0.858],
+  ['TR', 0.853], ['KW', 0.852], ['AG', 0.851], ['SC', 0.848], ['BG', 0.845],
+  ['RO', 0.845], ['GE', 0.844], ['KN', 0.840], ['PA', 0.839], ['BN', 0.837],
+  ['KZ', 0.837], ['CR', 0.833], ['RS', 0.833], ['RU', 0.832], ['BY', 0.824],
+  ['BS', 0.820], ['MY', 0.819], ['MK', 0.815], ['AM', 0.811], ['BB', 0.811],
+  ['AL', 0.810], ['TT', 0.807], ['MU', 0.806], ['BA', 0.804], ['IR', 0.799],
+  ['VC', 0.798], ['TH', 0.798], ['CN', 0.797], ['PE', 0.794], ['GD', 0.791],
+  ['AZ', 0.789], ['MX', 0.789], ['CO', 0.788], ['BR', 0.786], ['PW', 0.786],
+  ['MD', 0.785], ['UA', 0.779], ['EC', 0.777], ['DO', 0.776], ['GY', 0.776],
+  ['LK', 0.776], ['TO', 0.769], ['MV', 0.766], ['TM', 0.764], ['DZ', 0.763],
+  ['CU', 0.762], ['DM', 0.761], ['PY', 0.756], ['EG', 0.754], ['JO', 0.754],
+  ['LB', 0.752], ['LC', 0.748], ['MN', 0.747], ['TN', 0.746], ['ZA', 0.741],
+  ['UZ', 0.740], ['BZ', 0.721], ['LY', 0.721], ['JM', 0.720], ['KG', 0.720],
+  ['PH', 0.720], ['MA', 0.710], ['VE', 0.709], ['WS', 0.708], ['NI', 0.706],
+  ['NR', 0.703], ['VN', 0.703], ['BT', 0.698], ['SZ', 0.695], ['IQ', 0.695],
+  ['TJ', 0.691], ['TV', 0.689], ['BD', 0.685], ['IN', 0.685], ['SV', 0.678],
+  ['GQ', 0.674], ['PS', 0.674], ['CV', 0.668], ['NA', 0.665], ['GT', 0.662],
+  ['CG', 0.649], ['HN', 0.645], ['KI', 0.644], ['ST', 0.637], ['TL', 0.634],
+  ['GH', 0.628], ['KE', 0.628], ['NP', 0.622], ['VU', 0.621], ['LA', 0.617],
+  ['AO', 0.616], ['FM', 0.615], ['MM', 0.609], ['KH', 0.606], ['KM', 0.603],
+  ['ZW', 0.598], ['ZM', 0.595], ['CM', 0.588], ['SB', 0.584], ['CI', 0.582],
+  ['UG', 0.582], ['RW', 0.578], ['PG', 0.576], ['TG', 0.571], ['SY', 0.564],
+  ['MR', 0.563], ['NG', 0.560], ['TZ', 0.555], ['HT', 0.554], ['LS', 0.550],
+  ['PK', 0.544], ['SN', 0.530], ['GM', 0.524], ['CD', 0.522], ['MW', 0.517],
+  ['BF', 0.459], ['TD', 0.414], ['SS', 0.412], ['NE', 0.400], ['ID', 0.720],
+];
 
-        const redCountries = [
-          "AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ",
-          "BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BQ","BA","BW","BV","BR",
-          "IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","CX","CC",
-          "CO","KM","CG","CD","CK","CR","CI","HR","CU","CW","CY","CZ","DK","DJ","DM","DO",
-          "EC","EG","SV","GQ","ER","EE","SZ","ET","FK","FO","FJ","FI","FR","GF","PF","TF",
-          "GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY",
-          "HT","HM","VA","HN","HK","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM",
-          "JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY",
-          "LI","LT","LU","MO","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT",
-          "MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","NC","NZ",
-          "NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH",
-          "PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC",
-          "WS","SM","ST","SA","SN","RS","SC","SL","SG","SX","SK","SI","SB","SO","ZA","GS",
-          "SS","ES","LK","SD","SR","SJ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK",
-          "TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU",
-          "VE","VN","VG","VI","WF","EH","YE","ZM","ZW"
-        ];
+      // WZPL country codes from user
+      const wzplCodes = [
+        "AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ",
+        "BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BQ","BA","BW","BV","BR",
+        "IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","CX","CC",
+        "CO","KM","CG","CD","CK","CR","CI","HR","CU","CW","CY","CZ","DK","DJ","DM","DO",
+        "EC","EG","SV","GQ","ER","EE","SZ","ET","FK","FO","FJ","FI","FR","GF","PF","TF",
+        "GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY",
+        "HT","HM","VA","HN","HK","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM",
+        "JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY",
+        "LI","LT","LU","MO","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT",
+        "MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","NC","NZ",
+        "NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH",
+        "PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC",
+        "WS","SM","ST","SA","SN","RS","SC","SL","SG","SX","SK","SI","SB","SO","ZA","GS",
+        "SS","ES","LK","SD","SR","SJ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK",
+        "TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU",
+        "VE","VN","VG","VI","WF","EH","YE","ZM","ZW"
+      ];
 
-        const data = [['Country', 'Restriction']];
-        redCountries.forEach(code => data.push([code, 1]));
+      const wzplData = [['Country', 'License']];
+      wzplCodes.forEach(code => wzplData.push([code, 1]));
 
-        const chartData = google.visualization.arrayToDataTable(data);
+      function drawHDIMap() {
+        const data = google.visualization.arrayToDataTable(hdiData);
+        const options = {
+          colorAxis: {
+            colors: ['#f5f5f5', '#90caf9', '#1976d2'],
+            minValue: 0.4,
+            maxValue: 1.0
+          },
+          backgroundColor: '#ffffff',
+          datalessRegionColor: '#eeeeee',
+          legend: { textStyle: { color: '#333', fontSize: 12 } },
+          tooltip: { textStyle: { fontSize: 12 }, trigger: 'focus' }
+        };
+        const chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        chart.draw(data, options);
+      }
 
+      function drawWZPLMap() {
+        const data = google.visualization.arrayToDataTable(wzplData);
         const options = {
           legend: 'none',
-          colorAxis: { colors: [grey, red], values: [0, 1] },
+          colorAxis: { colors: ['#BDBDBD', '#D32F2F'], values: [0, 1] },
           backgroundColor: '#f5f5f5',
-          datalessRegionColor: grey
+          datalessRegionColor: '#BDBDBD',
+          tooltip: { textStyle: { fontSize: 12 }, trigger: 'focus' }
         };
-
         const chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-        chart.draw(chartData, options);
+        chart.draw(data, options);
       }
     </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f9f9f9;
+      }
+      nav {
+        margin-bottom: 20px;
+      }
+      button {
+        margin-right: 10px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #1976d2;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #1565c0;
+      }
+    </style>
   </head>
   <body>
-    <h2>Country Restrictions Map</h2>
+    <h2>Global Development Map</h2>
+    <nav>
+      <button onclick="drawWZPLMap()">WZPL Licensed Countries</button>
+      <button onclick="drawHDIMap()">HDI Countries</button>
+    </nav>
     <div id="regions_div" style="width: 100%; height: 600px;"></div>
   </body>
 </html>
